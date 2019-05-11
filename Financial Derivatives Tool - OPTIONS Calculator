@@ -1,0 +1,84 @@
+
+import math;
+from math import *;
+from scipy.stats import norm
+import numpy
+
+rate= float(input("Current risk free rate (in decimals): "));
+print("__________________________________");
+days = float(input("Days until expiry: "));
+print("__________________________________");
+stockprice = float(input("Current stock price: "));
+print("__________________________________");
+excprice = float(input("Option's excercise price: "));
+print("__________________________________");
+optprice = float(input("Curent option price: "));
+print("__________________________________");
+noshares = int(input("Number of shares purchased: "));
+print("__________________________________");
+
+cop = noshares * stockprice + 10;
+print("Cost of purchase: ");print(cop);
+
+proceeds = optprice * noshares - 40;
+print("Proceeds from option sale: ");print(proceeds);
+
+excerproceeds = noshares*excprice + proceeds - cop -20;
+print("Proceeds from excersice: ");print(excerproceeds);
+
+risk = proceeds/cop;
+print("Risk tolerance :");print(risk);
+
+breakeven = stockprice - stockprice*risk;
+print("Breakeven price: ");print(breakeven);
+
+mnth = 30/days;
+rtn = (proceeds/cop)*mnth;
+print("Monthly return: ");print (rtn);
+
+print("__________________________________");
+
+print("Black Scholes model: ");
+
+
+    #print("Implied Volatility: ");
+    #iv=(sqrt((2*math.pi)/(days/365)))*(optprice/stockprice);
+    #print(iv);
+
+for i in range (1,1000):
+    
+    iv=i/1000;
+    #print(iv);
+    cc=days/365;
+    se=stockprice/excprice;
+    lne=log(se);
+
+    rts1=rate+(iv**2)/2;
+
+    rts=rts1*(cc);
+
+    sq=iv*math.sqrt(cc);   #Check formulas
+
+    d1=(lne+rts)/sq;
+    nd1 = norm.cdf(d1);
+    d2=d1-iv*math.sqrt(cc);
+    nd2 = norm.cdf(d2);
+    #print(d1);
+    #print(nd1);
+    p1=stockprice*nd1;
+
+    pa=excprice/math.e**(rate*cc);
+    p2=pa*nd2;
+    o=p1-p2;
+    #print(o);
+
+    if (o<=(optprice+optprice*0.01)) and (o>=(optprice-optprice*0.01)):
+        print("Implied Volatility: ");    
+        print(iv);
+        print("Probability of N(d1): ");
+        print(nd1);
+        print("Probability of N(d2): ");
+        print(nd2);
+
+
+a=input();
