@@ -1,0 +1,49 @@
+
+
+
+     # The factory returns a generator generating consecutive
+     # requests to retrieve full history from date 'from' till 'to'
+def data(instrument, granularity, count):
+    import json
+    from oandapyV20 import API
+    from oandapyV20.contrib.factories import InstrumentsCandlesFactory
+
+    client = API(access_token=) # ADD OANDA ACCOUNT API TOKEN HERE
+    params = {
+                "granularity": granularity,
+                "count": count,
+             }
+    closing_prices = []
+    i = 0 
+    for r in InstrumentsCandlesFactory(instrument=instrument,params=params):
+        client.request(r)
+        values = r.response.get('candles')
+        closing_prices.append(r.response.get('candles')[i]['mid']['c'])
+        i=i+1
+        #print (values[i]['mid']['c'])
+        #print (json.dumps(r.response.get('candles'), indent=2))
+    #print (closing_prices)
+    gains = 0
+    losses = 0
+    gains_counter = 0
+    losses_counter = 0
+    for i in range (0,count-1):
+        a = float(values[i]['mid']['c'])
+        b = float(values[i+1]['mid']['c'])
+        test = b - a
+        if test >= 0:
+            gains = gains + test
+            gains_counter += 1
+        else:
+            losses = losses + test
+            losses_counter += 1
+        #print(values[i]['mid']['c'])
+
+    avg_gains = gains/gains_counter
+    avg_losses = -losses/losses_counter
+    avg = avg_gains/avg_losses
+
+    rsi = 100 - (100 /(1+avg))
+    print (rsi)
+    
+    
