@@ -1,0 +1,63 @@
+import numpy as np
+import math
+from math import log
+import pandas as pd
+from scipy.special import ndtri
+from random import *
+from matplotlib import pyplot as plt
+
+data = pd.read_csv('Data.csv') #REPLACE WITH NAME OF CSV FILE OF DATA
+returns =[];
+prices = [];
+
+for j in range (1,52):
+      a= data['Adj Close'][j+1];
+      b= data['Adj Close'][j];
+      c=a/b;
+      #print(a,b,c);
+      d=math.log(c);
+      returns.append(float(d));
+      prices.append(data['Adj Close'][j]);
+      
+
+
+variance = np.var(returns);
+mean = np.mean(returns);
+std = np.std(returns);
+data2 = [0,0,0,0,0,0,0,0,0,0,0,0]; #to add data and average it
+data3 = []; #to keep all data
+
+for g in range (1,1000):
+      last=round(data['Adj Close'][52],4);
+      rd = round(random(),3);
+      #print(rd);
+      rd1 = ndtri(rd);
+      #print(rd1);
+      ex=(mean-(variance/2))+std*rd1;
+      exp=math.e**ex;
+      #print(exp);
+      for i in range (1,12):
+            l= data2[i];
+            data2[i]=l+(last*exp);
+            last= last*exp;
+            data3.append(last*exp);
+            #print(data2[i]);
+            #print(last);
+
+for m in range(1,12):
+      a = data2[m]/1000;
+      prices.append(a);
+      print(a);
+      #print(prices);
+            
+plt.plot(prices);
+plt.xlabel("Time (s)");
+plt.xlabel("Price $")
+plt.show();
+plt.hist(data3,bins=100);
+plt.show();
+
+
+
+
+a=input();
