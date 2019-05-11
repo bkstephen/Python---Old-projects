@@ -1,0 +1,47 @@
+from yahoofinancials import YahooFinancials
+
+
+
+top100 = ['CBA.AX','BHP.AX','WBC.AX','CSL.AX','ANZ.AX','NAB.AX','MQG.AX','WOW.AX','WES.AX','TLS.AX','TCL.AX','WPL.AX','RIO.AX','RMD.AX','SCG.AX','GMG.AX','SUN.AX','IAG.AX','BXB.AX','NCM.AX','S32.AX','COL.AX','AMC.AX','SYD.AX','ALL.AX','QBE.AX','CIM.AX','FMG.AX','AGL.AX','ASX.AX','STO.AX','ORG.AX','OSH.AX','RHC.AX','DXS.AX','APA.AX','VCX.AX','TWE.AX','REA.AX','CPU.AX','QAN.AX','COH.AX','SHL.AX','GPT.AX','SGP.AX','TAH.AX','AZJ.AX','MGR.AX','CWN.AX','SPK.AX','A2M.AX','LLC.AX','CTX.AX','FPH.AX','AMP.AX','JHX.AX','TPM.AX','MPL.AX','ORI.AX','SEK.AX','AWC.AX','SOL.AX','CCL.AX','IPL.AX','WOR.AX','BSL.AX','BLD.AX','CGF.AX','WTC.AX','XRO.AX','AST.AX','SVW.AX','EVN.AX','BEN.AX','NST.AX','URW.AX','FLT.AX','MFG.AX','ALX.AX','WHC.AX','QUB.AX','SGR.AX','BOQ.AX','SKI.AX','ORA.AX','HSO.AX','DMP.AX','VEA.AX','FBU.AX','RWC.AX','DOW.AX','HVN.AX','LNK.AX','ALQ.AX','BPT.AX','CWY.AX','ILU.AX','ABC.AX','IOF.AX','APT.AX','CHC.AX','CYB.AX','PTM.AX','ANN.AX','ALU.AX','CAR.AX','MIN.AX','OZL.AX','PDL.AX','DLX.AX','JBH.AX','PMV.AX','GOZ.AX','MTS.AX','CTD.AX','BKW.AX','CGC.AX','IFL.AX','SCP.AX','SBM.AX','IEL.AX','NUF.AX','NHF.AX','TME.AX','IGO.AX','BWP.AX','NXT.AX','SKC.AX','SGM.AX','JHG.AX','RRL.AX','BKL.AX','SDF.AX','VOC.AX','MYO.AX','SAR.AX','CMW.AX','TNE.AX','IRE.AX','CNU.AX','ABP.AX','CQR.AX','NVT.AX','BAP.AX','GNC.AX','ING.AX','PPT.AX','PRY.AX','WEB.AX','MYX.AX','NEC.AX','CSR.AX','VVR.AX','APX.AX','PLS.AX','SUL.AX','BRG.AX','DHG.AX','LYC.AX','ARB.AX','SIQ.AX','MND.AX','IVC.AX','BIN.AX','GEM.AX','BGA.AX','PGH.AX','MMS.AX','NSR.AX','ORE.AX','IPH.AX','GXY.AX','GUD.AX','CLW.AX','SWM.AX','SFR.AX','OML.AX','NWS.AX','ASL.AX','AOG.AX','NAN.AX','CCP.AX','EHL.AX','SXL.AX','BAL.AX','ECX.AX','BVS.AX','ELD.AX','SDA.AX','TGR.AX','API.AX','RSG.AX','AAD.AX','GWA.AX','WSA.AX','EHE.AX','SYR.AX','AHG.AX','SIG.AX','IFN.AX']
+
+print ("Filter by the following: ")
+PE = float(input("P/E ratio Maximum: "))
+PB = float(input("P/B ratio Maximum: "))
+DivYield = float(input("Yield Average Minimum: "))
+Income = float(input("Net Income Minimum: "))
+
+def StockStats(stock):
+    pe = stock.get_pe_ratio()
+    book = stock.get_book_value()
+    mcap = stock.get_market_cap()
+    price = stock.get_current_price()
+    snumber = mcap/price # number of shares on issue based on market cap
+    bps = book/snumber # book value per share
+    pb = price/bps # price to book ratio
+    fiveYearYield = stock.get_five_yr_avg_div_yield()
+    netIncome = stock.get_net_income()
+    avg50 = stock.get_50day_moving_avg()
+    avg200 = stock.get_200day_moving_avg()
+    return (float(pe),float(pb),float(fiveYearYield),float(netIncome), avg50, avg200, float(price))
+
+
+print("Stock      P/E     P/B     Div-Y       Net Income   Avg50  Avg200")
+for i in range (0, len(top100)):
+    try:
+        stock = YahooFinancials(top100[i])
+        pricetoea = StockStats(stock)[0]
+        pricetobook = StockStats(stock)[1]
+        DYield = StockStats(stock)[2]
+        NIncome = StockStats(stock)[3]
+        av50 = StockStats(stock)[4]
+        av200 = StockStats(stock)[5]
+        current = StockStats(stock)[6]
+        #print ("working")
+        if pricetoea < PE and pricetobook < PB and DYield > DivYield and NIncome > Income and current > av50 and current > av200:
+            print (top100[i],"   ", round(pricetoea,1),"  ", round(pricetobook,1), "    ", round(DYield,1),"         ", NIncome, "  ", round(av50,1), "  ", round(av200,1) )
+    except:
+        print (top100[i], "  Error")
+    
+    #print (top100[i], pricetoea, pricetobook, DYield, NIncome )  
+
+
