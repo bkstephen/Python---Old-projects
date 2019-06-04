@@ -3,10 +3,8 @@ print ("              Bob The Builder (of wealth) - V5.04" )
 print("     Financial Markets Trading Robot Created by STEFANOS BEKIARIS")
 print ("         _________________________________________________")
 
-import oandapyV20
 from oandapyV20 import API
 import oandapyV20.endpoints.pricing as pricing
-import pandas as pd
 import json
 import requests
 from oandapyV20.contrib.factories import InstrumentsCandlesFactory
@@ -18,9 +16,7 @@ from oandapyV20.contrib.requests import TrailingStopLossOrderRequest as Trailing
 import oandapyV20.endpoints.instruments as instruments
 from datetime import date
 import oandapyV20.endpoints.trades as trades
-import sys
-import datetime
-import os 
+
 
 today = str(date.today())
 
@@ -259,6 +255,7 @@ def SellCheck(currency):
 #RUNS UNTIL IT IS 17:16
 hour = int(datetime.datetime.now().hour)
 minute = int(datetime.datetime.now().minute)
+
 if hour==17:
     h = 31 - minute
 else:
@@ -279,11 +276,11 @@ if h > 0:
 
 #RUNS ONLY ONCE AT THE BEGGING
 for i in range (0,len(currencies)):
-    if checkOpenTrades(currencies[i])==True:
+    if checkOpenTrades(currencies[i]):
         buy.remove(currencies[i])
         
 for i in range (0,len(currencies)):
-    if checkOpenTrades(currencies[i])==True:
+    if checkOpenTrades(currencies[i]):
         sell.remove(currencies[i])
         
 
@@ -319,7 +316,7 @@ while 0 < 1:
             print ("Problem with retrieving High, Low or Current price occured")
         try:
             if current_price > (high+(high*0.0003)) and current_price > movingAverage(currencies[n],"M15",100):
-                if BuyCheck(currencies[n])==True:
+                if BuyCheck(currencies[n]):
                     print (currencies[n])
                     OrderBuy(currencies[n],high,low,0.5)
 
@@ -328,19 +325,13 @@ while 0 < 1:
             print ("Problem with the Buy checks, Buy orders occured")
         try:    
             if current_price < (low-(low*0.0003)) and current_price < movingAverage(currencies[n],"M15",100):
-                if SellCheck(currencies[n])==True:
+                if SellCheck(currencies[n]):
                     print (currencies[n])
                     OrderSell(currencies[n],high,low,0.5)
 
         except:
             print("Problem with the Sell checks, Sell orders occured")
-    
-    #restarts program at 4AM
-    #hour = int(datetime.datetime.now().hour)
-    #if hour == 4:
-        #python = sys.executable
-        #os.execl(python, python, * sys.argv)
-                    
+
         
 #CREATED BY STEFANOS BEKIARIS
 
